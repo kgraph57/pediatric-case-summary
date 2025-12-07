@@ -1,0 +1,156 @@
+{
+  "Case": {
+    "id": "string",
+    "caseNumber": "number",
+    "fieldNumber": "number (1-10)",
+    "patientId": "string",
+    "isInpatient": "boolean",
+    "carePeriod": {
+      "startDate": "Date",
+      "endDate": "Date"
+    },
+    "patientAge": {
+      "type": "'day' | 'month' | 'year' | 'yearMonth'",
+      "value": "number",
+      "monthValue": "number (optional)"
+    },
+    "gender": "'male' | 'female'",
+    "outcome": "'cured' | 'improved' | 'unchanged' | 'worsened' | 'deceased'",
+    "isDesignatedDisease": "boolean",
+    "perinatalHistory": {
+      "gestationalAge": {
+        "weeks": "number",
+        "days": "number"
+      },
+      "birthWeight": "number (g)",
+      "deliveryMethod": "'vaginal' | 'cesarean'",
+      "apgarScore": {
+        "oneMinute": "number",
+        "fiveMinutes": "number"
+      },
+      "maternalInfo": {
+        "age": "number",
+        "gravida": "number",
+        "para": "number",
+        "infection": "boolean",
+        "infectionDetails": "string (optional)"
+      }
+    },
+    "pastMedicalHistory": "string (optional)",
+    "familyHistory": "string (optional)",
+    "infectionContactHistory": "string (optional)",
+    "lifestyleHistory": "string (optional)",
+    "diagnoses": {
+      "primary": "string (required)",
+      "secondary": "string[] (optional)"
+    },
+    "chiefComplaint": "string (required)",
+    "presentIllness": "string (required)",
+    "physicalExamination": {
+      "vitalSigns": {
+        "temperature": "number (度)",
+        "respiratoryRate": "number (回/分)",
+        "heartRate": "number (回/分)",
+        "bloodPressure": {
+          "systolic": "number",
+          "diastolic": "number"
+        },
+        "spO2": "number (%)",
+        "oxygenTherapy": "boolean",
+        "gcs": {
+          "eye": "number",
+          "verbal": "number",
+          "motor": "number"
+        }
+      },
+      "bodyMeasurements": {
+        "height": "number (cm)",
+        "weight": "number (kg)",
+        "headCircumference": "number (cm)"
+      },
+      "findings": "string"
+    },
+    "laboratoryFindings": {
+      "bloodTest": {
+        "wbc": "number (/µL)",
+        "hb": "number (g/dL)",
+        "hct": "number (%)",
+        "plt": "number (万/µL)",
+        "neu": "number (%)",
+        "lym": "number (%)"
+      },
+      "biochemistry": {
+        "tBil": "number (mg/dL)",
+        "dBil": "number (mg/dL)",
+        "ast": "number (U/L)",
+        "alt": "number (U/L)",
+        "ldh": "number (U/L)",
+        "bun": "number (mg/dL)",
+        "cre": "number (mg/dL)",
+        "na": "number (mEq/L)",
+        "k": "number (mEq/L)",
+        "cl": "number (mEq/L)",
+        "crp": "number (mg/dL)",
+        "bnp": "number (pg/mL)"
+      },
+      "coagulation": {
+        "ptInr": "number",
+        "aptt": "number (秒)",
+        "fibrinogen": "number (mg/dL)",
+        "dDimer": "number (µg/mL)",
+        "pivka2": "number (mAU/mL)"
+      },
+      "bloodGas": {
+        "pH": "number",
+        "pCO2": "number (mmHg)",
+        "hco3": "number (mmol/L)",
+        "glucose": "number (mg/dL)",
+        "lactate": "number (mmol/L)"
+      },
+      "specialTests": {
+        "insulin": "number (µU/mL)",
+        "acetoacetate": "number (µmol/L)",
+        "hydroxybutyrate": "number (µmol/L)",
+        "freeFattyAcids": "number (μEq/L)"
+      },
+      "urinalysis": {
+        "method": "'catheter' | 'midstream'",
+        "specificGravity": "number",
+        "leukocyteEsterase": "'negative' | 'positive'",
+        "nitrite": "'negative' | 'positive'",
+        "wbc": "number (/HPF)",
+        "gramStain": "'negative' | 'positive'",
+        "gramStainDetails": "string"
+      },
+      "otherTests": {
+        "ultrasound": "string",
+        "xray": "string",
+        "ct": "string",
+        "mri": "string",
+        "ecg": "string"
+      }
+    },
+    "differentialDiagnoses": "string[] (required, min 1)",
+    "problemPoints": "string (optional)",
+    "hospitalCourse": "string (required)",
+    "familyExplanation": "string (required)",
+    "postDischargeCourse": "string (optional)",
+    "createdAt": "Date",
+    "updatedAt": "Date",
+    "status": "'draft' | 'completed' | 'reviewed'"
+  },
+  "Settings": {
+    "userId": "string (optional)",
+    "rotationPeriod": {
+      "startDate": "Date",
+      "endDate": "Date"
+    },
+    "fieldDefinitions": {
+      "[fieldNumber: number]": {
+        "name": "string",
+        "designatedDiseases": "string[]"
+      }
+    }
+  }
+}
+
