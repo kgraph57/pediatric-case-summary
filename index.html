@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小児科専門医申請用症例要約作成支援</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 10px;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .section h3 {
+            color: #764ba2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+        .file-list li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        .file-list li strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .file-list li a {
+            color: #764ba2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .file-list li a:hover {
+            text-decoration: underline;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #764ba2;
+        }
+        .button-secondary {
+            background: #6c757d;
+        }
+        .button-secondary:hover {
+            background: #5a6268;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .badge-new {
+            background: #28a745;
+        }
+        .badge-important {
+            background: #dc3545;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            margin-top: 40px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 小児科専門医申請用症例要約作成支援</h1>
+            <p>小児科専門医試験の申請に必要な30症例以上の症例要約を、効率的かつ正確に作成するための支援ツールと資料集</p>
+        </header>
+
+        <div class="section">
+            <h2>📁 フォルダ構成</h2>
+            
+            <h3>🚀 Manas開発用</h3>
+            <ul class="file-list">
+                <li>
+                    <strong><a href="Manas開発用/">Manas開発用/</a></strong>
+                    <span class="badge badge-new">新規</span><br>
+                    Manasでアプリ開発を開始するためのファイル一式
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li><a href="Manas開発用/Manasプロンプト.md">Manasプロンプト.md</a> - 最初に投げるプロンプト</li>
+                        <li><a href="Manas開発用/Manas開発指示書.md">Manas開発指示書.md</a> - 詳細な開発仕様書</li>
+                        <li><a href="Manas開発用/データ構造定義.json">データ構造定義.json</a> - データモデル定義</li>
+                        <li><a href="Manas開発用/README.md">README.md</a> - フォルダの使い方</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>📚 ルール・テンプレート</h3>
+            <ul class="file-list">
+                <li>
+                    <strong><a href="症例要約作成ルール.md">症例要約作成ルール.md</a></strong>
+                    <span class="badge badge-important">重要</span><br>
+                    詳細なルールと表記規則、バリデーションルール、特殊な医学用語の表記方法
+                </li>
+                <li>
+                    <strong><a href="症例情報収集テンプレート.md">症例情報収集テンプレート.md</a></strong>
+                    <span class="badge badge-important">重要</span><br>
+                    入力項目のテンプレート、各項目の説明、記載順序の確認
+                </li>
+                <li>
+                    <strong><a href="症例要約作成ガイド.md">症例要約作成ガイド.md</a></strong><br>
+                    ステップバイステップの作業ガイド、チェックリスト、効率的な作業のコツ
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🎯 用途</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>📝 症例要約の作成支援</h3>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>ルールに基づいた症例要約の作成</li>
+                        <li>バリデーションとチェック機能</li>
+                        <li>効率的な作業フロー</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>💻 アプリ開発</h3>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Webアプリケーション/モバイルアプリケーションの開発</li>
+                        <li>Manasでの開発を想定</li>
+                        <li>詳細な開発仕様書とプロンプト</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 使い方</h2>
+            
+            <h3>症例要約を作成する場合</h3>
+            <ol style="padding-left: 20px; margin-top: 10px;">
+                <li><a href="症例要約作成ガイド.md">症例要約作成ガイド.md</a> を参照</li>
+                <li><a href="症例情報収集テンプレート.md">症例情報収集テンプレート.md</a> を使用して情報を収集</li>
+                <li><a href="症例要約作成ルール.md">症例要約作成ルール.md</a> に従って作成</li>
+            </ol>
+
+            <h3>アプリを開発する場合</h3>
+            <ol style="padding-left: 20px; margin-top: 10px;">
+                <li><a href="Manas開発用/">Manas開発用/</a> フォルダを参照</li>
+                <li><a href="Manas開発用/README.md">Manas開発用/README.md</a> を読む</li>
+                <li><a href="Manas開発用/Manasプロンプト.md">Manasプロンプト.md</a> をManasに投げる</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>📖 クイックスタート</h2>
+            <a href="Manas開発用/Manasプロンプト.md" class="button">Manas開発を始める</a>
+            <a href="症例要約作成ガイド.md" class="button button-secondary">症例要約を作成する</a>
+            <a href="症例要約作成ルール.md" class="button button-secondary">ルールを確認する</a>
+        </div>
+
+        <footer>
+            <p>このリポジトリは個人利用を目的としています。</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/kgraph57/pediatric-case-summary" style="color: #667eea;">GitHubリポジトリ</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
+
