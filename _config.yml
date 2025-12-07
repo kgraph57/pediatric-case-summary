@@ -1,0 +1,6 @@
+theme: jekyll-theme-minimal
+include:
+  - index.html
+exclude:
+  - README.md
+
