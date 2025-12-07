@@ -1,0 +1,384 @@
+{
+  "version": "1.0.0",
+  "description": "小児科専門医試験用の医学用語・表現ルール定義（論文・学会発表対応）",
+  
+  "人名由来病名": {
+    "description": "人名由来の病名は原語表記に変換。二人の場合はハイフンで結ぶ",
+    "rules": [
+      {
+        "pattern": "アプガール",
+        "replacement": "Apgar",
+        "context": ["スコア", "点数", "スコアー"]
+      },
+      {
+        "pattern": "ファロー四徴症",
+        "replacement": "Fallot四徴症"
+      },
+      {
+        "pattern": "グラム染色",
+        "replacement": "Gram染色"
+      },
+      {
+        "pattern": "Chédiak[\\s-]?higashi",
+        "replacement": "Chédiak-Higashi",
+        "caseSensitive": false,
+        "regex": true
+      },
+      {
+        "pattern": "Chediak[\\s-]?Higashi",
+        "replacement": "Chédiak-Higashi",
+        "caseSensitive": false,
+        "regex": true
+      },
+      {
+        "pattern": "Sjögren",
+        "replacement": "Sjögren"
+      },
+      {
+        "pattern": "Sjogren",
+        "replacement": "Sjögren"
+      },
+      {
+        "pattern": "Henoch[\\s-]?Schönlein[\\s]紫斑病",
+        "replacement": "IgA血管炎",
+        "regex": true
+      },
+      {
+        "pattern": "Henoch[\\s-]?Schonlein[\\s]紫斑病",
+        "replacement": "IgA血管炎",
+        "regex": true
+      },
+      {
+        "pattern": "ヘノッホ[\\s-]?シェーンライン[\\s]紫斑病",
+        "replacement": "IgA血管炎",
+        "regex": true
+      }
+    ]
+  },
+
+  "検査名変換": {
+    "description": "検査名は正式名称で表記",
+    "rules": [
+      {
+        "pattern": "エコー",
+        "replacement": "超音波検査",
+        "context": ["検査", "所見", "を行った", "を実施", "を施行"]
+      },
+      {
+        "pattern": "レントゲン",
+        "replacement": "X線検査",
+        "context": ["写真", "検査", "を撮影", "を行った"]
+      },
+      {
+        "pattern": "レントゲン写真",
+        "replacement": "X線検査"
+      },
+      {
+        "pattern": "採血を行う",
+        "replacement": "血液検査を行う"
+      },
+      {
+        "pattern": "採血を施行",
+        "replacement": "血液検査を施行"
+      },
+      {
+        "pattern": "採血を実施",
+        "replacement": "血液検査を実施"
+      }
+    ]
+  },
+
+  "薬剤呼称": {
+    "description": "薬剤の呼称ルール",
+    "rules": [
+      {
+        "pattern": "抗生剤",
+        "replacement": "抗菌薬"
+      },
+      {
+        "pattern": "抗生物質",
+        "replacement": "抗菌薬"
+      }
+    ],
+    "note": "薬剤名は一般名を使用（商品名不可）。英字の先頭は小文字。"
+  },
+
+  "動植物名": {
+    "description": "動植物名はカタカナ表記",
+    "rules": [
+      {
+        "pattern": "犬",
+        "replacement": "イヌ",
+        "context": ["医学", "実験", "研究"]
+      },
+      {
+        "pattern": "猿",
+        "replacement": "サル",
+        "context": ["医学", "実験", "研究"]
+      },
+      {
+        "pattern": "人",
+        "replacement": "ヒト",
+        "context": ["医学", "実験", "研究", "組織", "細胞"]
+      },
+      {
+        "pattern": "桜",
+        "replacement": "サクラ",
+        "context": ["医学", "実験", "研究"]
+      }
+    ],
+    "note": "医学文献では動植物名をカタカナで表記。ただし、一般的な文脈（「患者は人です」など）では「人」のままでも可"
+  },
+
+  "年齢表記": {
+    "description": "年齢の呼称ルール",
+    "rules": [
+      {
+        "pattern": "(\\d+)ヶ月",
+        "replacement": "$1か月",
+        "regex": true
+      },
+      {
+        "pattern": "(\\d+)カ月",
+        "replacement": "$1か月",
+        "regex": true
+      },
+      {
+        "pattern": "(\\d+)才",
+        "replacement": "$1歳",
+        "regex": true
+      }
+    ],
+    "ageCategories": {
+      "4週未満": "新生児",
+      "4週～1歳未満": "乳児",
+      "1～12歳": "男児/女児",
+      "13～18歳": "男子/女子",
+      "19歳以上": "男性/女性"
+    }
+  },
+
+  "医学用語表記": {
+    "description": "特定の医学用語の表記ルール",
+    "rules": [
+      {
+        "pattern": "奇形",
+        "replacement": "先天異常",
+        "alternatives": ["形成異常", "先天性○疾患"],
+        "note": "可能な限り「先天異常」「形成異常」「先天性○疾患」を使用。症状は「変質徴候」"
+      },
+      {
+        "pattern": "痙攣",
+        "replacement": "けいれん"
+      },
+      {
+        "pattern": "癌",
+        "replacement": "がん",
+        "note": "「がん」は悪性腫瘍全体、「癌」は上皮由来のみ（文脈によって使い分けが必要な場合あり）"
+      }
+    ]
+  },
+
+  "ひらがな表記必須": {
+    "description": "これらの語は必ずひらがなで表記",
+    "words": [
+      "いったん",
+      "いまだ",
+      "いる",
+      "おそれ",
+      "かつ",
+      "きたす",
+      "ころ",
+      "ごとに",
+      "すぎない",
+      "すべて",
+      "ただし",
+      "ために",
+      "つかむ",
+      "できる",
+      "とおり"
+    ],
+    "rules": [
+      {
+        "pattern": "一旦",
+        "replacement": "いったん"
+      },
+      {
+        "pattern": "未だ",
+        "replacement": "いまだ"
+      },
+      {
+        "pattern": "恐れ",
+        "replacement": "おそれ"
+      },
+      {
+        "pattern": "来たす",
+        "replacement": "きたす"
+      },
+      {
+        "pattern": "頃",
+        "replacement": "ころ"
+      },
+      {
+        "pattern": "毎に",
+        "replacement": "ごとに"
+      },
+      {
+        "pattern": "過ぎない",
+        "replacement": "すぎない"
+      },
+      {
+        "pattern": "全て",
+        "replacement": "すべて"
+      },
+      {
+        "pattern": "為に",
+        "replacement": "ために"
+      },
+      {
+        "pattern": "掴む",
+        "replacement": "つかむ"
+      },
+      {
+        "pattern": "出来る",
+        "replacement": "できる"
+      },
+      {
+        "pattern": "通り",
+        "replacement": "とおり"
+      }
+    ]
+  },
+
+  "文章表現": {
+    "description": "文章表現のルール",
+    "rules": [
+      {
+        "pattern": "(\\d+)週間前より",
+        "replacement": "$1週前から",
+        "regex": true,
+        "note": "\"より\"は比較の意味、\"間\"は省略"
+      },
+      {
+        "pattern": "(\\d+)か月前より",
+        "replacement": "$1か月前から",
+        "regex": true
+      },
+      {
+        "pattern": "AとBとが",
+        "replacement": "A、Bおよび",
+        "note": "列挙は「A、BおよびCが」の形式"
+      },
+      {
+        "pattern": "A,B,Cが",
+        "replacement": "A、BおよびCが",
+        "note": "列挙は「A、BおよびCが」の形式"
+      }
+    ]
+  },
+
+  "学名・遺伝子名": {
+    "description": "学名（ラテン語）と遺伝子名はイタリック表記",
+    "formatting": {
+      "italic": {
+        "examples": ["Escherichia coli", "遺伝子名"],
+        "note": "レンダリング時はイタリック体で表示。テキストでは*で囲む（Markdown形式）"
+      },
+      "roman": {
+        "examples": ["ウイルス名"],
+        "note": "ウイルス名はイタリックにせず、ローマン体（立体）の小文字で記載"
+      }
+    }
+  },
+
+  "特殊記号": {
+    "description": "特殊記号の表記ルール",
+    "rules": [
+      {
+        "symbol": "pH",
+        "format": "pは小文字、Hは大文字",
+        "correct": "pH",
+        "incorrect": ["PH", "ph", "Ph"]
+      },
+      {
+        "symbol": "FiO2",
+        "format": "F_IO_2（Iは大文字で下付き、2は下付き）",
+        "note": "レンダリング時は下付き文字を使用"
+      },
+      {
+        "symbol": "µ（マイクロ）",
+        "format": "半角記号を使用（全角と混在させない）",
+        "correct": "µ",
+        "incorrect": ["μ（全角）"]
+      }
+    ]
+  },
+
+  "感情表現禁止": {
+    "description": "感情的表現は使用禁止",
+    "forbidden": [
+      "無念",
+      "残念",
+      "惜しい",
+      "悲しい",
+      "嬉しい",
+      "驚いた"
+    ],
+    "note": "客観的な医学的記載に徹する"
+  },
+
+  "敬語表現": {
+    "description": "敬語表現は使用しない",
+    "rules": [
+      {
+        "pattern": "ご家族",
+        "replacement": "家族"
+      },
+      {
+        "pattern": "～していただいた",
+        "replacement": "～した",
+        "regex": true
+      },
+      {
+        "pattern": "～していただき",
+        "replacement": "～し",
+        "regex": true
+      },
+      {
+        "pattern": "～していただく",
+        "replacement": "～する",
+        "regex": true
+      }
+    ]
+  },
+
+  "略語": {
+    "description": "略語のルール",
+    "rule": "周知されていない略語は初出時に必ずスペルアウト（日本語可）",
+    "commonAbbreviations": [
+      "WBC", "RBC", "Hb", "Ht", "Plt", "CRP", "LDH", "AST", "ALT",
+      "BUN", "Cre", "Na", "K", "Cl", "pH", "pCO2", "HCO3", "SpO2"
+    ],
+    "note": "上記は一般的な略語として使用可能。それ以外は初出時にフルスペルを記載"
+  },
+
+  "記載順序": {
+    "現症": ["身長", "体重", "体温", "呼吸数", "脈拍", "血圧"],
+    "検査": ["血液", "血清生化学", "尿"]
+  },
+
+  "適用優先順位": {
+    "description": "ルール適用の優先順位",
+    "order": [
+      1,
+      "人名由来病名",
+      "検査名変換",
+      "薬剤呼称",
+      "医学用語表記",
+      "ひらがな表記必須",
+      "年齢表記",
+      "文章表現",
+      "敬語表現"
+    ]
+  }
+}

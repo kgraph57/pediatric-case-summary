@@ -1,3 +1,28 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
 # OS関連
 .DS_Store
 .DS_Store?
@@ -25,6 +50,10 @@
 # *.jpeg
 
 # 個人情報が含まれる可能性のあるファイル
-# 症例要約 二木良平.pdf
-# 症例要約二木良平/
+共有しない/
 
+# 環境変数
+.env
+.env.local
+.env.production.local
+.env.development.local

@@ -1,69 +1,110 @@
 # 小児科専門医申請用症例要約作成支援
 
-小児科専門医試験の申請に必要な30症例以上の症例要約を、効率的かつ正確に作成するための支援ツールと資料集です。
+小児科専門医試験の申請に必要な30症例以上の症例要約を、効率的かつ正確に作成するための支援ツールと資料集
 
-## 🌐 GitHub Pages
+## 🚀 クイックスタート
 
-**📌 共有用URL（GitHub Pagesを有効化後）：**
-https://kgraph57.github.io/pediatric-case-summary
+### Webアプリケーション（React版）
 
-### GitHub Pagesの有効化方法
+最新のReact + TypeScript + Viteで実装されたモダンなWebアプリケーションです。
 
-1. リポジトリのSettingsにアクセス：https://github.com/kgraph57/pediatric-case-summary/settings/pages
-2. 「Source」で「GitHub Actions」を選択
-3. 「Save」をクリック
-4. 数分待つと、上記URLでアクセス可能になります
+#### セットアップ
 
-**⚠️ 重要：** リポジトリのSettingsでGitHub Pagesを有効化する必要があります。
+```bash
+npm install
+npm run dev
+```
+
+#### 環境変数の設定
+
+`.env`ファイルを作成：
+
+```env
+# Cloudflare Worker経由（推奨・APIキー保護）
+VITE_API_PROXY_URL=https://your-worker-url.workers.dev
+
+# または直接API呼び出し（開発環境のみ）
+VITE_AI_API_KEY=your-api-key-here
+VITE_AI_API_URL=https://api.openai.com/v1/chat/completions
+VITE_AI_MODEL=gpt-4
+```
+
+#### ビルド
+
+```bash
+npm run build
+```
+
+詳細は [README_React実装.md](./README_React実装.md) を参照してください。
+
+---
 
 ## 📁 フォルダ構成
 
 ### Manas開発用
-- **`Manas開発用/`** - Manasでアプリ開発を開始するためのファイル一式
-  - `Manasプロンプト.md` - 最初に投げるプロンプト
-  - `Manas開発指示書.md` - 詳細な開発仕様書
-  - `データ構造定義.json` - データモデル定義
-  - その他参考資料
+
+Manasでアプリ開発を開始するためのファイル一式
+
+- [Manas開発用/](./Manas開発用/) - 開発用ファイル
+- [Manasプロンプト.md](./Manas開発用/Manasプロンプト.md) - 最初に投げるプロンプト
+- [Manas開発指示書.md](./Manas開発用/Manas開発指示書.md) - 詳細な開発仕様書
 
 ### ルール・テンプレート
-- **`症例要約作成ルール.md`** - 詳細なルールと表記規則
-- **`症例情報収集テンプレート.md`** - 入力項目のテンプレート
-- **`症例要約作成ガイド.md`** - ステップバイステップの作業ガイド
 
-### 開発資料
-- **`Manas開発指示書.md`** - アプリ開発の詳細仕様書
-- **`Manasプロンプト.md`** - Manas用プロンプト
-- **`データ構造定義.json`** - データモデル定義
+- [症例要約作成ルール.md](./症例要約作成ルール.md) - 詳細なルールと表記規則
+- [症例情報収集テンプレート.md](./症例情報収集テンプレート.md) - 入力項目のテンプレート
+- [症例要約作成ガイド.md](./症例要約作成ガイド.md) - ステップバイステップの作業ガイド
 
-## 🎯 用途
+### セキュリティ
 
-1. **症例要約の作成支援**
-   - ルールに基づいた症例要約の作成
-   - バリデーションとチェック機能
-   - 効率的な作業フロー
+- [セキュリティ分析レポート.md](./セキュリティ分析レポート.md) - セキュリティ分析結果
+- [セキュリティ実装ガイド.md](./セキュリティ実装ガイド.md) - セキュリティ実装ガイド
+- [Cloudflare_Worker_セットアップガイド.md](./Cloudflare_Worker_セットアップガイド.md) - APIキー保護のためのCloudflare Worker設定
 
-2. **アプリ開発**
-   - Webアプリケーション/モバイルアプリケーションの開発
-   - Manasでの開発を想定
+---
 
-## 📚 使い方
+## 🔒 セキュリティ
 
-### 症例要約を作成する場合
-1. `症例要約作成ガイド.md` を参照
-2. `症例情報収集テンプレート.md` を使用して情報を収集
-3. `症例要約作成ルール.md` に従って作成
+### 実装済みのセキュリティ対策
 
-### アプリを開発する場合
-1. `Manas開発用/` フォルダを参照
-2. `Manas開発用/README.md` を読む
-3. `Manasプロンプト.md` をManasに投げる
+- ✅ 入力検証とサニタイズ（XSS、インジェクション攻撃の防止）
+- ✅ レート制限（クライアント側）
+- ✅ エラーメッセージの改善（情報漏洩防止）
+- ✅ Cloudflare Worker経由のAPIキー保護（推奨）
+
+### 重要な注意事項
+
+⚠️ **APIキーの保護**: 本番環境では必ずCloudflare Workerを使用してください。直接APIキーを使用すると、APIキーがクライアント側に露出します。
+
+詳細は [セキュリティ実装ガイド.md](./セキュリティ実装ガイド.md) を参照してください。
+
+---
+
+## 🛠️ 技術スタック
+
+- **フロントエンド**: React 18 + TypeScript + Vite
+- **バックエンド**: Cloudflare Workers（APIキー保護）
+- **AI API**: OpenAI / Anthropic
+- **Word出力**: docx.js
+- **デプロイ**: GitHub Pages
+
+---
+
+## 📚 ドキュメント
+
+- [README_React実装.md](./README_React実装.md) - React実装の詳細
+- [技術スタック比較.md](./技術スタック比較.md) - 技術選択の比較
+- [理想的なUIUX設計.md](./理想的なUIUX設計.md) - UI/UX設計
+- [Cloudflare_Worker_セットアップガイド.md](./Cloudflare_Worker_セットアップガイド.md) - Cloudflare Workerのセットアップ
+
+---
 
 ## 📝 ライセンス
 
 このリポジトリは個人利用を目的としています。
 
-## ⚠️ 注意事項
+---
 
-- 個人情報が含まれる可能性のあるファイル（PDF、画像など）は`.gitignore`で除外しています
-- 必要に応じて`.gitignore`を編集してください
+## 🔗 リンク
 
+- [GitHubリポジトリ](https://github.com/kgraph57/pediatric-case-summary)

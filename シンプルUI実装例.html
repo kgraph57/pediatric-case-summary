@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>症例要約作成アシスタント</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7f7f7;
+            --bg-tertiary: #fafafa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b7280;
+            --text-tertiary: #9ca3af;
+            --border-color: #e5e7eb;
+            --border-focus: #3b82f6;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .info-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .info-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-section-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .info-section-content ol {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .info-section-content li {
+            margin-bottom: 4px;
+        }
+
+        .form-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-label-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 400;
+            margin-top: 4px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 320px;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.6;
+            transition: all 0.15s ease;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .button:hover:not(:disabled) {
+            background: var(--accent-hover);
+        }
+
+        .button:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .button-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .button-secondary:hover:not(:disabled) {
+            background: var(--bg-tertiary);
+        }
+
+        .status {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 24px 0;
+            font-size: 14px;
+            display: none;
+            border-left: 3px solid;
+        }
+
+        .status.info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+            border-left-color: var(--info);
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border-left-color: var(--error);
+        }
+
+        .status.processing {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border-left-color: var(--warning);
+        }
+
+        .result-section {
+            margin-top: 32px;
+            padding: 32px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .result-content {
+            background: var(--bg-tertiary);
+            padding: 24px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: 'MS Mincho', serif;
+            font-size: 11pt;
+            line-height: 1.8;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .button-group .button {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 24px 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .form-container {
+                padding: 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>症例要約作成アシスタント</h1>
+            <p class="subtitle">音声入力で作成したテキストから症例要約を自動生成</p>
+        </div>
+
+        <div class="info-section">
+            <div class="info-section-title">使い方</div>
+            <div class="info-section-content">
+                <ol>
+                    <li>iPhoneの音声入力やMacのAquaVoiceなどで、カルテを見ながら話してテキスト化</li>
+                    <li>そのテキストを下の欄に貼り付け</li>
+                    <li>「症例要約を作成」ボタンをクリック</li>
+                    <li>AIが自動で情報を抽出・分類して症例要約を作成します</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form id="caseForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="caseNumber">症例番号</label>
+                        <input 
+                            type="number" 
+                            id="caseNumber" 
+                            class="form-input"
+                            value="1" 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="fieldNumber">分野番号</label>
+                        <select id="fieldNumber" class="form-select" required>
+                            <option value="1">分野1</option>
+                            <option value="2">分野2</option>
+                            <option value="3" selected>分野3</option>
+                            <option value="4">分野4</option>
+                            <option value="5">分野5</option>
+                            <option value="6">分野6</option>
+                            <option value="7">分野7</option>
+                            <option value="8">分野8</option>
+                            <option value="9">分野9</option>
+                            <option value="10">分野10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="isDesignatedDisease" class="checkbox">
+                        <label for="isDesignatedDisease" class="checkbox-label">指定疾患</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="voiceInputText">
+                        音声入力テキスト
+                    </label>
+                    <p class="form-label-hint">形式は気にしなくてOK、思いついた順で話した内容をそのまま貼り付けてください</p>
+                    <textarea 
+                        id="voiceInputText" 
+                        class="form-textarea" 
+                        placeholder="例: 患者IDはP12345、生後2か月の男児で、発熱と咳嗽で来院しました。1か月前から軽い咳があったんですが、3日前から発熱が38.5度で、咳嗽も悪化して食欲も低下しました。近医でRSウイルス陽性となって当院に紹介されました。入院時の所見は、体温38.5度、呼吸数40回、脈拍130回、血圧80/50で、SpO2は96パーセント、室内気です。体重は4.2キロで、呼吸音にラ音がありました。検査では、WBCが12500、Hbが11.2、CRPが2.5でした。胸部X線で両側下肺野に浸潤影がありました。診断はRSウイルス感染症です。鑑別診断としては、細菌性肺炎と気管支喘息を考えました。入院後は、酸素投与と補液を行い、3日目に解熱、7日目に退院しました。家族には、RSウイルス感染症について説明して、今後の注意点も説明しました。"
+                        required
+                    ></textarea>
+                </div>
+
+                <div id="status" class="status"></div>
+
+                <button type="submit" id="submitButton" class="button">
+                    症例要約を作成
+                </button>
+            </form>
+        </div>
+
+        <div id="resultSection" class="result-section">
+            <div class="result-section-title">症例要約が完成しました</div>
+            <div id="resultContent" class="result-content"></div>
+            <div class="button-group">
+                <button id="downloadWord" class="button">
+                    Word形式でダウンロード
+                </button>
+                <button id="copyText" class="button button-secondary">
+                    テキストをコピー
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const voiceInputText = document.getElementById('voiceInputText');
+        const submitButton = document.getElementById('submitButton');
+        const statusDiv = document.getElementById('status');
+        const resultSection = document.getElementById('resultSection');
+        const resultContent = document.getElementById('resultContent');
+        const downloadWordBtn = document.getElementById('downloadWord');
+        const copyTextBtn = document.getElementById('copyText');
+
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        document.getElementById('caseForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const caseNumber = document.getElementById('caseNumber').value;
+            const fieldNumber = document.getElementById('fieldNumber').value;
+            const isDesignatedDisease = document.getElementById('isDesignatedDisease').checked;
+            const voiceText = voiceInputText.value.trim();
+
+            if (!voiceText) {
+                showStatus('テキストを入力してください。', 'error');
+                return;
+            }
+
+            showStatus('AIが情報を整理中... しばらくお待ちください', 'processing');
+            submitButton.disabled = true;
+
+            try {
+                const prompt = `以下の音声入力から症例要約を作成してください。
+
+症例番号: ${caseNumber}
+分野番号: ${fieldNumber}
+指定疾患: ${isDesignatedDisease ? 'あり' : 'なし'}
+
+【音声入力テキスト】
+${voiceText}
+
+【要件】
+1. 音声入力から情報を抽出・分類してください
+2. ルールに従って症例要約を作成してください
+3. 30行以内に収めてください
+4. 表記ルールを遵守してください（数字は半角、単位のスペース、句読点は、。で統一など）`;
+
+                const demoResponse = `症例番号: ${caseNumber}${isDesignatedDisease ? ' ○' : ''}
+分野番号: ${fieldNumber}
+患者ID: P12345
+入院・外来: 入院症例
+受け持ち期間: 2024年4月1日～2024年4月15日
+年齢: 生後2か月
+性別: 男
+転帰: 治癒
+
+【主訴】
+発熱と咳嗽で来院。
+
+【現病歴】
+1か月前から軽い咳があったが、3日前から発熱（38.5度）と咳嗽が悪化。食欲も低下。近医受診し、RSウイルス陽性。当院紹介。
+
+【入院時診察所見】
+体温 38.5度、呼吸数 40回/分、脈拍 130回/分、血圧 80/50 mmHg。SpO2 96%（室内気）。体重 4.2 kg。呼吸音: ラ音あり。
+
+【入院時検査所見】
+WBC 12500/μL、Hb 11.2 g/dL、Hct 33.5%、Plt 25.3万/μL。T.Bil 0.8 mg/dL、AST 45 U/L、ALT 32 U/L、CRP 2.5 mg/dL。Na 138 mEq/L、K 4.2 mEq/L、Cl 102 mEq/L。胸部X線検査: 両側下肺野に浸潤影。
+
+【鑑別診断】
+1. RSウイルス感染症。
+2. 細菌性肺炎。
+3. 気管支喘息。
+
+【入院後経過】
+入院1日目: 酸素投与（1 L/分）開始、補液開始。入院3日目: 解熱、酸素離脱。入院7日目: 症状改善し退院。
+
+【家族への説明・指示】
+RSウイルス感染症について説明し、今後の注意点（手洗い、マスク着用、症状悪化時の受診）を説明した。`;
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                showStatus('症例要約が完成しました！', 'success');
+                resultContent.textContent = demoResponse;
+                resultSection.style.display = 'block';
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('エラー:', error);
+                showStatus('エラーが発生しました。もう一度お試しください。', 'error');
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+
+        copyTextBtn.addEventListener('click', () => {
+            const text = resultContent.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showStatus('テキストをクリップボードにコピーしました', 'success');
+            }).catch(err => {
+                showStatus('コピーに失敗しました', 'error');
+            });
+        });
+
+        downloadWordBtn.addEventListener('click', () => {
+            showStatus('Wordファイルを生成中...', 'processing');
+            setTimeout(() => {
+                showStatus('Wordファイルのダウンロードを開始しました。', 'success');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

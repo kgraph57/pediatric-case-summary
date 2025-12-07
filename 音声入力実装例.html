@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>症例要約作成アシスタント - 音声入力版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .voice-input-area {
+            background: #f8f9fa;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .voice-input-area:hover {
+            background: #f0f0f0;
+            border-color: #764ba2;
+        }
+
+        .voice-input-area.recording {
+            background: #fff3cd;
+            border-color: #ffc107;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .mic-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .voice-input-text {
+            min-height: 200px;
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            margin: 20px 0;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.secondary {
+            background: #6c757d;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #0c5460;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #721c24;
+        }
+
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .result-area {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-area h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .result-content {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'MS Mincho', serif;
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .voice-input-area {
+                padding: 30px 20px;
+            }
+
+            .mic-icon {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 症例要約作成アシスタント</h1>
+        <p class="subtitle">音声入力で症例要約を自動生成</p>
+
+        <form id="caseForm">
+            <div class="form-group">
+                <label>症例番号</label>
+                <input type="number" id="caseNumber" value="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>分野番号</label>
+                <select id="fieldNumber" required>
+                    <option value="1">分野1</option>
+                    <option value="2">分野2</option>
+                    <option value="3" selected>分野3</option>
+                    <option value="4">分野4</option>
+                    <option value="5">分野5</option>
+                    <option value="6">分野6</option>
+                    <option value="7">分野7</option>
+                    <option value="8">分野8</option>
+                    <option value="9">分野9</option>
+                    <option value="10">分野10</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="isDesignatedDisease" class="checkbox">
+                    <label for="isDesignatedDisease" style="display: inline; margin: 0;">指定疾患</label>
+                </div>
+            </div>
+
+            <div class="voice-input-area" id="voiceInputArea">
+                <div class="mic-icon">🎤</div>
+                <h3>タップして話してください</h3>
+                <p style="color: #666; margin-top: 10px;">カルテを見ながら、思いついた順で話してください</p>
+                <p style="color: #999; font-size: 12px; margin-top: 5px;">形式は気にしなくてOKです</p>
+            </div>
+
+            <textarea 
+                id="voiceInputText" 
+                class="voice-input-text" 
+                placeholder="音声入力されたテキストがここに表示されます。手動で入力・編集も可能です。"
+            ></textarea>
+
+            <div id="status" class="status"></div>
+
+            <button type="button" id="startRecording" class="button">
+                🎤 音声入力を開始
+            </button>
+
+            <button type="button" id="stopRecording" class="button secondary" style="display: none;">
+                ⏹️ 音声入力を停止
+            </button>
+
+            <button type="submit" id="submitButton" class="button">
+                📤 症例要約を作成
+            </button>
+        </form>
+
+        <div id="resultArea" class="result-area">
+            <h3>✅ 症例要約が完成しました</h3>
+            <div id="resultContent" class="result-content"></div>
+            <button id="downloadWord" class="button" style="margin-top: 15px;">
+                📄 Word形式でダウンロード
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const voiceInputArea = document.getElementById('voiceInputArea');
+        const voiceInputText = document.getElementById('voiceInputText');
+        const startRecordingBtn = document.getElementById('startRecording');
+        const stopRecordingBtn = document.getElementById('stopRecording');
+        const submitButton = document.getElementById('submitButton');
+        const statusDiv = document.getElementById('status');
+        const resultArea = document.getElementById('resultArea');
+        const resultContent = document.getElementById('resultContent');
+        const downloadWordBtn = document.getElementById('downloadWord');
+
+        let recognition = null;
+        let isRecording = false;
+
+        // Web Speech APIの初期化
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ja-JP';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                isRecording = true;
+                voiceInputArea.classList.add('recording');
+                startRecordingBtn.style.display = 'none';
+                stopRecordingBtn.style.display = 'block';
+                showStatus('🎤 音声認識を開始しました。話してください...', 'info');
+            };
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                voiceInputText.value = finalTranscript + interimTranscript;
+            };
+
+            recognition.onerror = (event) => {
+                console.error('音声認識エラー:', event.error);
+                showStatus('❌ 音声認識エラーが発生しました。もう一度お試しください。', 'error');
+                stopRecording();
+            };
+
+            recognition.onend = () => {
+                stopRecording();
+            };
+        } else {
+            showStatus('⚠️ お使いのブラウザは音声認識に対応していません。テキスト入力をご利用ください。', 'error');
+            startRecordingBtn.style.display = 'none';
+        }
+
+        startRecordingBtn.addEventListener('click', () => {
+            if (recognition) {
+                recognition.start();
+            }
+        });
+
+        stopRecordingBtn.addEventListener('click', () => {
+            if (recognition) {
+                recognition.stop();
+            }
+        });
+
+        voiceInputArea.addEventListener('click', () => {
+            if (!isRecording && recognition) {
+                recognition.start();
+            }
+        });
+
+        function stopRecording() {
+            isRecording = false;
+            voiceInputArea.classList.remove('recording');
+            startRecordingBtn.style.display = 'block';
+            stopRecordingBtn.style.display = 'none';
+        }
+
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        document.getElementById('caseForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const caseNumber = document.getElementById('caseNumber').value;
+            const fieldNumber = document.getElementById('fieldNumber').value;
+            const isDesignatedDisease = document.getElementById('isDesignatedDisease').checked;
+            const voiceText = voiceInputText.value.trim();
+
+            if (!voiceText) {
+                showStatus('❌ 音声入力またはテキストを入力してください。', 'error');
+                return;
+            }
+
+            showStatus('🤖 AIが情報を整理中...', 'processing');
+            submitButton.disabled = true;
+
+            try {
+                // ここでAI APIを呼び出す
+                // 実際の実装では、OpenAI APIやAnthropic APIを使用
+                const prompt = `以下の音声入力から症例要約を作成してください。
+
+症例番号: ${caseNumber}
+分野番号: ${fieldNumber}
+指定疾患: ${isDesignatedDisease ? 'あり' : 'なし'}
+
+【音声入力テキスト】
+${voiceText}
+
+【要件】
+1. 音声入力から情報を抽出・分類してください
+2. ルールに従って症例要約を作成してください
+3. 30行以内に収めてください
+4. 表記ルールを遵守してください`;
+
+                // 実際の実装では、ここでAI APIを呼び出す
+                // const response = await callAIAPI(prompt);
+                
+                // デモ用のレスポンス
+                const demoResponse = `症例番号: ${caseNumber}${isDesignatedDisease ? ' ○' : ''}
+分野番号: ${fieldNumber}
+患者ID: [抽出されたID]
+入院・外来: [抽出された情報]
+受け持ち期間: [抽出された期間]
+年齢: [抽出された年齢]
+性別: [抽出された性別]
+転帰: [抽出された転帰]
+
+【主訴】
+[抽出された主訴]
+
+【現病歴】
+[抽出された現病歴]
+
+【入院時診察所見】
+[抽出された診察所見]
+
+【入院時検査所見】
+[抽出された検査所見]
+
+【鑑別診断】
+1. [抽出された鑑別診断1]
+2. [抽出された鑑別診断2]
+
+【入院後経過】
+[抽出された経過]
+
+【家族への説明・指示】
+[抽出された説明内容]`;
+
+                showStatus('✅ 症例要約が完成しました！', 'success');
+                resultContent.textContent = demoResponse;
+                resultArea.style.display = 'block';
+                resultArea.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('エラー:', error);
+                showStatus('❌ エラーが発生しました。もう一度お試しください。', 'error');
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+
+        downloadWordBtn.addEventListener('click', () => {
+            showStatus('📄 Wordファイルを生成中...', 'processing');
+            // 実際の実装では、Wordファイルを生成してダウンロード
+            // ここではデモ用のメッセージ
+            setTimeout(() => {
+                showStatus('✅ Wordファイルのダウンロードを開始しました。', 'success');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
