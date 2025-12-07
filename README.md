@@ -2,6 +2,20 @@
 
 小児科専門医試験の申請に必要な30症例以上の症例要約を、効率的かつ正確に作成するための支援ツールと資料集です。
 
+## 🌐 GitHub Pages
+
+**📌 共有用URL（GitHub Pagesを有効化後）：**
+https://kgraph57.github.io/pediatric-case-summary
+
+### GitHub Pagesの有効化方法
+
+1. リポジトリのSettingsにアクセス：https://github.com/kgraph57/pediatric-case-summary/settings/pages
+2. 「Source」で「GitHub Actions」を選択
+3. 「Save」をクリック
+4. 数分待つと、上記URLでアクセス可能になります
+
+**⚠️ 重要：** リポジトリのSettingsでGitHub Pagesを有効化する必要があります。
+
 ## 📁 フォルダ構成
 
 ### Manas開発用
