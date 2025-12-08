@@ -1,6 +1,5 @@
 // AI整形サービス
-// 注意: 本番環境ではAPIキーをクライアント側に含めないでください
-// 環境変数が設定されていない場合はデモモードで動作します
+// Manus Webdev (pediatric-case-app) のAPIを使用
 
 export interface ExtractedCaseData {
   title?: string;
@@ -18,95 +17,32 @@ export interface ExtractedCaseData {
   discussion?: string;
 }
 
-const AI_API_KEY = import.meta.env.VITE_AI_API_KEY || '';
-const AI_API_URL = import.meta.env.VITE_AI_API_URL || 'https://api.openai.com/v1/chat/completions';
-const AI_MODEL = import.meta.env.VITE_AI_MODEL || 'gpt-4';
+// Manus Webdev APIエンドポイント
+const MANUS_API_URL = import.meta.env.VITE_MANUS_API_URL || 'https://3000-i20qhdrrwrm55oqz3mfre-8f3cfda8.manus-asia.computer';
 
 /**
  * フリーテキストから症例情報を抽出・整形して各項目に振り分ける
  */
 export async function extractCaseData(freeText: string): Promise<ExtractedCaseData> {
-  // デモモード（APIキーがない場合）
-  if (!AI_API_KEY) {
-    return extractCaseDataDemo(freeText);
-  }
-
-  const systemPrompt = `あなたは小児科専門医試験の症例要約作成を支援するAIです。
-入力された症例情報から、以下の項目を抽出・整形してJSON形式で返してください。
-
-【抽出項目】
-- title: 症例のタイトル（診断名を含む簡潔な表現）
-- patientAge: 患者年齢（数値のみ）
-- patientGender: 性別（"男性" または "女性"）
-- chiefComplaint: 主訴
-- presentIllness: 現病歴
-- pastHistory: 既往歴
-- familyHistory: 家族歴
-- physicalExam: 身体所見
-- labFindings: 検査所見
-- imagingFindings: 画像所見
-- diagnosis: 診断名
-- treatment: 治療・経過
-- discussion: 考察・学び
-
-【医学用語整形ルール】
-1. 人名由来の病名は英語表記（例：Down症候群、Apgarスコア）
-2. 検査名の整形：
-   - 「エコー」→「超音波検査」
-   - 「レントゲン」→「X線検査」
-   - 「採血」→「血液検査」
-3. 薬剤呼称：「抗生剤」→「抗菌薬」
-4. 医学用語：「痙攣」→「けいれん」、「奇形」→「先天異常」
-5. 年齢表記：「○ヶ月」→「○か月」、「○才」→「○歳」
-6. 敬語表現を削除：「ご家族」→「家族」、「～していただいた」→「～した」
-7. 感情表現を削除：「無念」「残念」「驚いた」など
-8. 数字は半角、単位の前に半角スペース（例外：点、日、g、度、回/分、秒、万/µL、mm、WBCはスペースなし）
-9. 句読点は、。で統一
-
-【出力形式】
-JSONのみを返してください。説明文は不要です。
-項目が見つからない場合は空文字列を返してください。
-
-例：
-{
-  "title": "川崎病の症例",
-  "patientAge": 3,
-  "patientGender": "男性",
-  "chiefComplaint": "発熱と発疹",
-  "presentIllness": "5日前から発熱が続き、3日前から全身に発疹が出現。",
-  ...
-}`;
-
   try {
-    const response = await fetch(AI_API_URL, {
+    const response = await fetch(`${MANUS_API_URL}/api/trpc/ai.extractCaseData`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: AI_MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: freeText }
-        ],
-        temperature: 0.3,
-        response_format: { type: 'json_object' }
-      }),
+      body: JSON.stringify({ text: freeText }),
     });
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
     }
 
-    const json = await response.json();
-    const content = json.choices[0]?.message?.content || '{}';
-    const extracted = JSON.parse(content);
-    
-    return extracted;
+    const data = await response.json();
+    return data.result.data as ExtractedCaseData;
   } catch (error) {
     console.error('AI extraction error:', error);
-    throw new Error('AI整形に失敗しました。もう一度お試しください。');
+    // フォールバック: デモモード
+    return extractCaseDataDemo(freeText);
   }
 }
 
@@ -114,59 +50,25 @@ JSONのみを返してください。説明文は不要です。
  * 入力済みの症例情報を医学用語ルールに従って整形する
  */
 export async function formatMedicalText(text: string): Promise<string> {
-  // デモモード（APIキーがない場合）
-  if (!AI_API_KEY) {
-    return formatMedicalTextDemo(text);
-  }
-
-  const systemPrompt = `あなたは医学用語整形の専門家です。
-入力されたテキストを以下のルールに従って整形してください。
-
-【医学用語整形ルール】
-1. 人名由来の病名は英語表記（例：Down症候群、Apgarスコア、Fallot四徴症）
-2. 検査名の整形：
-   - 「エコー」→「超音波検査」
-   - 「レントゲン」→「X線検査」
-   - 「採血」→「血液検査」
-3. 薬剤呼称：「抗生剤」「抗生物質」→「抗菌薬」
-4. 医学用語：「痙攣」→「けいれん」、「奇形」→「先天異常」
-5. 年齢表記：「○ヶ月」「○カ月」→「○か月」、「○才」→「○歳」
-6. 敬語表現を削除：「ご家族」→「家族」、「～していただいた」→「～した」
-7. 感情表現を削除：「無念」「残念」「驚いた」など
-8. 数字は半角、単位の前に半角スペース（例外：点、日、g、度、回/分、秒、万/µL、mm、WBCはスペースなし）
-9. 句読点は、。で統一
-10. ひらがな表記必須：いったん、いまだ、おそれ、すべて、できる、とおり など
-
-整形後のテキストのみを返してください。説明文は不要です。`;
-
   try {
-    const response = await fetch(AI_API_URL, {
+    const response = await fetch(`${MANUS_API_URL}/api/trpc/ai.formatMedicalText`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: AI_MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: text }
-        ],
-        temperature: 0.3,
-      }),
+      body: JSON.stringify({ text }),
     });
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
     }
 
-    const json = await response.json();
-    const formatted = json.choices[0]?.message?.content || text;
-    
-    return formatted.trim();
+    const data = await response.json();
+    return data.result.data.formatted;
   } catch (error) {
     console.error('AI formatting error:', error);
-    throw new Error('AI整形に失敗しました。もう一度お試しください。');
+    // フォールバック: デモモード
+    return formatMedicalTextDemo(text);
   }
 }
 
